@@ -1,1 +1,1 @@
-# pBC_Single_Neuron_Model_for_NE
+# Dual Mechanisms for Heterogenous Responses of Inspiratory Neurons to Noradrenergic Modulation
