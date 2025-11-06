@@ -12,8 +12,6 @@ Qca = 2; Qv = 100; camin = 0.005;
 
 % equations
 
-%vca = @(ca) 13.27*log(4000./(Qca*ca)); 
-
 minf = @(v) 1/(1+exp((Qv*v-vm)/sm));
 ninf = @(v) 1/(1+exp((Qv*v-vn)/sn));
 mpinf = @(v) 1/(1+exp((Qv*v-vmp)/smp));
@@ -29,8 +27,6 @@ I_k = @(v,n) gk*(n.^4).*(Qv*v-vk);
 I_na = @(v,n) gna*((minf(v)).^3).*(1-n).*(Qv*v-vna);
 I_nap = @(v,h) gnap*mpinf(v).*h.*(Qv*v-vna);
 I_can = @(v,ca) gcan*f(ca).*(Qv*v-vna);
-% I_can = @(v,ca) gcan*f(ca).*(Qv*v-vcan);
-% I_ca = @(v,ca) gca*mpinf(v).*(Qv*v-vca(ca));
 I_ca = @(v) gca*mpinf(v).*(Qv*v-vca);
 I_tonic = @(v) gtonic*(Qv*v-vsyn);
 
@@ -55,23 +51,18 @@ dldt = @(ca,l) A*kd.*(1-l)-A.*Qca*ca.*l;
 fn = @(t,y) [dvdt(y(1),y(2),y(3),y(4)); dndt(y(1),y(2)); dhdt(y(1),y(3)); dcadt(y(1), ...
     y(5),y(4),y(6)); dcatotdt(y(1),y(4)); dldt(y(4),y(6))];
 
-% tspan = [0 60000];
+
 options = odeset('BDF','on','RelTol',1e-9,'AbsTol',1e-10);
 % options = odeset('BDF','on','RelTol',1e-12,'AbsTol',1e-15,'Refine',2);
 
-[t,y] = ode15s(fn,tspan,ic,options);
-% [t,y] = ode15s(fn,tspan,ic);
+[t,y] = ode15s(fn,tspan,ic,options); 
 
 % Getting rid of transients
 ic_new = y(end,:);
-% tspan = [0 60000];
 [tnew,ynew] = ode15s(fn,tspan,ic_new,options);
-% [tnew,ynew] = ode15s(fn,tspan,ic_new);
 
 % Getting rid of transients
 ic_new = ynew(end,:);
-% tspan = [0 40000];
 [tnew,ynew] = ode15s(fn,tspan,ic_new,options);
-% [tnew,ynew] = ode15s(fn,tspan,ic_new);
 
 end
